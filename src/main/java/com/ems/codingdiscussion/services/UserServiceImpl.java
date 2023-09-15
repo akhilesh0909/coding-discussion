@@ -14,6 +14,18 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	private enum EmailDomain {
+		
+		OF_CONTACTOR("@external.thalesgroup.com"),
+		OF_PERMANENT("@thalesgroup.com");
+		
+		public final String value;
+
+	    private EmailDomain(String value) {
+	        this.value = value;
+	    }
+	}
 
 	@Override
 	public UserDTO createUser(SignupDTO signupDTO) {
@@ -33,5 +45,18 @@ public class UserServiceImpl implements UserService{
 	public boolean hasUserWithEmail(String email) {
 		return userRepository.findFirstByEmail(email).isPresent();
 	}
+
+	@Override
+	public boolean isValidEmail(String email) {
+		
+		String subStringOfEmail = email.substring(email.indexOf("@"));
+		
+		if(subStringOfEmail.equalsIgnoreCase(EmailDomain.OF_CONTACTOR.value)  || subStringOfEmail.equalsIgnoreCase(EmailDomain.OF_PERMANENT.value)) {
+			return true;
+		}
+		return false;
+	}
+	
+
 
 }

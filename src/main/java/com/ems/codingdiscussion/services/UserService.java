@@ -8,5 +8,7 @@ public interface UserService {
 	UserDTO createUser(SignupDTO signupDTO);
 
 	boolean hasUserWithEmail(String email);
+	
+	boolean isValidEmail(String email);
 
 }
