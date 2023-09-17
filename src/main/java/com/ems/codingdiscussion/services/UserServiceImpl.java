@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService{
 	
 	private enum EmailDomain {
 		
-		OF_CONTACTOR("@external.thalesgroup.com"),
+		OF_CONTRACTOR("@external.thalesgroup.com"),
 		OF_PERMANENT("@thalesgroup.com");
 		
 		public final String value;
@@ -49,10 +49,12 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public boolean isValidEmail(String email) {
 		
-		String subStringOfEmail = email.substring(email.indexOf("@"));
-		
-		if(subStringOfEmail.equalsIgnoreCase(EmailDomain.OF_CONTACTOR.value)  || subStringOfEmail.equalsIgnoreCase(EmailDomain.OF_PERMANENT.value)) {
-			return true;
+		if(email.contains("@")) {
+			String subStringOfEmail = email.substring(email.indexOf("@"));
+			
+			if(subStringOfEmail.equalsIgnoreCase(EmailDomain.OF_CONTRACTOR.value)  || subStringOfEmail.equalsIgnoreCase(EmailDomain.OF_PERMANENT.value)) {
+				return true;
+			}
 		}
 		return false;
 	}

@@ -17,7 +17,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class JWTRequestFilter extends OncePerRequestFilter {
 	
@@ -40,7 +42,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             try {
 				username = jwtUtil.extractUsername(jwt);
 			} catch (Exception e) {
-				logger.error("Error in JwtAuthentication Filter " + e.getMessage());
+				log.error("Error in JwtAuthentication Filter " + e.getMessage());
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);				
 				response.getWriter().write(e.getMessage());
 				return;
@@ -62,7 +64,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 				    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 				}
 			} catch (Exception e) {
-				logger.error("JWT token is invalid or expired");
+				log.error("JWT token is invalid or expired");
 			}
         }
         chain.doFilter(request, response);
