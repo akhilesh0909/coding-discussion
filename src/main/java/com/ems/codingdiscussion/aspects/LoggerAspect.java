@@ -1,4 +1,4 @@
-package com.ems.codingdiscussion.Aspects;
+package com.ems.codingdiscussion.aspects;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
