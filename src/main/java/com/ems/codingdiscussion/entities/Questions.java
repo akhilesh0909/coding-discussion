@@ -6,9 +6,11 @@ import java.util.List;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.ems.codingdiscussion.dtos.QuestionDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +39,7 @@ public class Questions {
 	
 	private Date createdDate;
 	
+	@ElementCollection(targetClass=String.class)
 	private List<String> tags;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -45,5 +48,17 @@ public class Questions {
 	@JsonIgnore
 	private User user;
 	
+	public QuestionDTO getQuestionDTO() {
+		 QuestionDTO questionDto= new QuestionDTO();
+		 questionDto.setId(id);
+		 questionDto.setTitle(title);
+		 questionDto.setBody(body);
+		 questionDto.setTags(tags);
+		 questionDto.setUserId(user.getId());
+		 questionDto.setUserName(user.getName()); 
+		 questionDto.setCreatedDate(createdDate);
+		 return questionDto;
+		 
+	}
 	
 }

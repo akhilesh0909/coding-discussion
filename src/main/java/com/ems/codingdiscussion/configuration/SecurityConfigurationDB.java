@@ -61,7 +61,7 @@ public class SecurityConfigurationDB {
 				.permitAll()
 				.and()
 				.authorizeHttpRequests()
-				.requestMatchers("/user","/","/admin")
+				.requestMatchers("/admin","/api/**","/user","/")
 				.authenticated()
 				.and()
 				.formLogin()

@@ -1,5 +1,6 @@
 package com.ems.codingdiscussion.dtos;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -16,5 +17,9 @@ public class QuestionDTO {
 	private List<String> tags;
 	
 	private Long userId;
+
+	private String userName;
+	
+	private Date createdDate; 
 	
 }
