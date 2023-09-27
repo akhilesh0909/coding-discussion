@@ -5,6 +5,7 @@ import java.util.Date;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.ems.codingdiscussion.dtos.AnswerDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -44,7 +45,21 @@ public class Answers {
  @JsonIgnore
  private Questions question;
  
- 
+ public AnswerDTO getAnswerDTO() {
+	 
+	 
+	 AnswerDTO answerDTO = new AnswerDTO();
+	 answerDTO.setId(id);
+	 answerDTO.setBody(body);
+	 answerDTO.setUserId(user.getId());
+	 answerDTO.setQuestionId(question.getId());
+	 answerDTO.setUserName(user.getName());
+	 answerDTO.setCreatedDate(createdDate);
+	 
+	 
+	 return answerDTO;
+	 
+ }
  
  
  
