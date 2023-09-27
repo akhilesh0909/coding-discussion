@@ -40,6 +40,7 @@ public class QuestionServiceImpl implements QuestionService {
 	private ImageRepository imageRepository;
 	
 	public static final int SEARCH_RESULT_PER_PAGE =5;
+	
 	@Override
 	public QuestionDTO addQuestion(QuestionDTO questionDTO) {
 		Optional<User> optUser = userRepository.findById(questionDTO.getUserId());
@@ -89,5 +90,25 @@ public class QuestionServiceImpl implements QuestionService {
 
 		}
 		return null;
+	}
+
+	@Override
+	public List<Questions> getQuestionListBySearch(int pageNumber, String askedQuestion) {
+		
+		List<Questions> questionList = questionRepository.findAll();
+		
+		List<Questions> responseList = new ArrayList<>();
+		
+		String[] words = askedQuestion.split(" ");
+		for(String word : words) {
+			for(Questions que: questionList) {
+				for(String tag: que.getTags())
+					if (word.equalsIgnoreCase(tag)) {
+						responseList.add(que);
+					}
+			}
+		}
+		
+		return responseList;
 	}
 }
