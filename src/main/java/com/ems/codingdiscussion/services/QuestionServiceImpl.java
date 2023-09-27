@@ -95,20 +95,13 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public List<Questions> getQuestionListBySearch(int pageNumber, String askedQuestion) {
 		
-		List<Questions> questionList = questionRepository.findAll();
-		
-		List<Questions> responseList = new ArrayList<>();
-		
 		String[] words = askedQuestion.split(" ");
-		for(String word : words) {
-			for(Questions que: questionList) {
-				for(String tag: que.getTags())
-					if (word.equalsIgnoreCase(tag)) {
-						responseList.add(que);
-					}
-			}
+
+		List<Questions> questionList = new ArrayList<>();
+		for(String word: words) {
+			questionList.addAll(questionRepository.findByTags(word));
 		}
 		
-		return responseList;
+		return questionList;
 	}
 }
