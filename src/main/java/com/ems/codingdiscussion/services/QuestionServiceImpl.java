@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.ems.codingdiscussion.dtos.AllQuestionResponseDTO;
 import com.ems.codingdiscussion.dtos.QuestionDTO;
+import com.ems.codingdiscussion.dtos.SingleQuestionDTO;
 import com.ems.codingdiscussion.entities.Questions;
 import com.ems.codingdiscussion.entities.User;
 import com.ems.codingdiscussion.repositories.QuestionRepository;
@@ -55,5 +56,13 @@ public class QuestionServiceImpl implements QuestionService {
 		allQuestionResponseDTO.setPageNumber(questionPage.getPageable().getPageNumber());
 		allQuestionResponseDTO.setTotalPages(questionPage.getTotalPages());
 		return allQuestionResponseDTO;
+	}
+
+	@Override
+	public SingleQuestionDTO getQuestionById(Long questionId) {
+		Optional<Questions> optionalQuestion = questionRepository.findById(questionId);
+		SingleQuestionDTO singleQuestionDTO = new SingleQuestionDTO();
+		optionalQuestion.ifPresent(question -> singleQuestionDTO.setQuestionDTO(question.getQuestionDTO()));
+		return singleQuestionDTO;
 	}
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ems.codingdiscussion.dtos.AllQuestionResponseDTO;
 import com.ems.codingdiscussion.dtos.QuestionDTO;
+import com.ems.codingdiscussion.dtos.SingleQuestionDTO;
 import com.ems.codingdiscussion.services.QuestionService;
 
 @RestController
@@ -37,5 +38,14 @@ public class QuestionsController {
 	public ResponseEntity<AllQuestionResponseDTO> getAllQuestions(@PathVariable int pageNumber){
 		AllQuestionResponseDTO allQuestionResponse = questionService.getAllQuestions(pageNumber);
 		return ResponseEntity.ok(allQuestionResponse);
+	}
+	
+	@GetMapping("/question/{questionId}")
+	public ResponseEntity<?> getQuestionById(@PathVariable Long questionId){
+		SingleQuestionDTO singleQuestionDTO = questionService.getQuestionById(questionId);
+		if(singleQuestionDTO == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(singleQuestionDTO);
 	}
 }
