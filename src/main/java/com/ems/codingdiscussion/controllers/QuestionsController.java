@@ -52,9 +52,12 @@ public class QuestionsController {
 		return ResponseEntity.ok(singleQuestionDTO);
 	}
 	
-	@PostMapping("/askedQuestion/{pageNumber}")
+	@PostMapping("/askedQuestion")
 	public ResponseEntity<?> getQuestionListBySearch(@PathVariable int pageNumber,@RequestBody String askedQuestion){
-		List<Questions> askedQuestionResponse = questionService.getQuestionListBySearch(pageNumber,askedQuestion);
+		List<Questions> askedQuestionResponse = questionService.getQuestionListBySearch(askedQuestion);
+		if(askedQuestionResponse == null) {
+			return ResponseEntity.notFound().build();
+		}
 		return ResponseEntity.ok(askedQuestionResponse);
 	}
 }

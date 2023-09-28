@@ -93,13 +93,15 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public List<Questions> getQuestionListBySearch(int pageNumber, String askedQuestion) {
+	public List<Questions> getQuestionListBySearch(String askedQuestion) {
 		
 		String[] words = askedQuestion.split(" ");
 
 		List<Questions> questionList = new ArrayList<>();
 		for(String word: words) {
-			questionList.addAll(questionRepository.findByTags(word));
+			String trimmedWord = word.replaceAll("[^a-zA-Z]", "");
+			if(!trimmedWord.isEmpty() && !trimmedWord.isBlank())
+				questionList.addAll(questionRepository.findByTagsLike("%"+trimmedWord+"%"));
 		}
 		
 		return questionList;

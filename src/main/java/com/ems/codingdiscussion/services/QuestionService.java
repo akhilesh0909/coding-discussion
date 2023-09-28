@@ -15,6 +15,6 @@ public interface QuestionService {
 
 	SingleQuestionDTO getQuestionById(Long questionId);
 
-	List<Questions> getQuestionListBySearch(int pageNumber, String askedQuestion);
+	List<Questions> getQuestionListBySearch(String askedQuestion);
 
 }

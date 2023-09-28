@@ -5,6 +5,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +29,7 @@ public class Image {
 	private String type;
 	
 	@Lob
+	@Column(columnDefinition="LONGBLOB")
 	private byte[] data;
 	
 	
