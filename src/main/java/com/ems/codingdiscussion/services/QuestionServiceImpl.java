@@ -93,9 +93,11 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public List<Questions> getQuestionListBySearch(String askedQuestion) {
+	public AllQuestionResponseDTO getQuestionListBySearch(String askedQuestion) {
 		
 		String[] words = askedQuestion.split(" ");
+		
+		AllQuestionResponseDTO allQuestionResponseDTO = new AllQuestionResponseDTO();
 
 		List<Questions> questionList = new ArrayList<>();
 		for(String word: words) {
@@ -103,7 +105,8 @@ public class QuestionServiceImpl implements QuestionService {
 			if(!trimmedWord.isEmpty() && !trimmedWord.isBlank())
 				questionList.addAll(questionRepository.findByTagsLike("%"+trimmedWord+"%"));
 		}
+		allQuestionResponseDTO.setQuestionDTOlist(questionList.stream().map(Questions::getQuestionDTO).collect(Collectors.toList()));
 		
-		return questionList;
+		return allQuestionResponseDTO;
 	}
 }
