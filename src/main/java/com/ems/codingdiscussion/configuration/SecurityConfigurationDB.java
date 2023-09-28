@@ -57,7 +57,7 @@ public class SecurityConfigurationDB {
 				.csrf()
 				.disable()
 				.authorizeHttpRequests()
-				.requestMatchers("/sign-up","/authenticate","/api/askedQuestion/**")
+				.requestMatchers("/sign-up","/authenticate")
 				.permitAll()
 				.and()
 				.authorizeHttpRequests()
