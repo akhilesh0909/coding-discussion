@@ -53,7 +53,7 @@ public class QuestionsController {
 	}
 	
 	@PostMapping("/askedQuestion")
-	public ResponseEntity<?> getQuestionListBySearch(@PathVariable int pageNumber,@RequestBody String askedQuestion){
+	public ResponseEntity<?> getQuestionListBySearch(@RequestBody String askedQuestion){
 		List<Questions> askedQuestionResponse = questionService.getQuestionListBySearch(askedQuestion);
 		if(askedQuestionResponse == null) {
 			return ResponseEntity.notFound().build();
