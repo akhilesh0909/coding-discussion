@@ -74,4 +74,13 @@ public class QuestionsController {
 		}
 		return ResponseEntity.ok(askedQuestionResponse);
 	}
+	
+	@GetMapping("/questionPosted/{userId}")
+	public ResponseEntity<?> getPostedQuestionList(@PathVariable Long userId){
+		AllQuestionResponseDTO postedQuestionResponse = questionService.getPostedQuestionList(userId);
+		if(postedQuestionResponse == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(postedQuestionResponse);
+	}
 }

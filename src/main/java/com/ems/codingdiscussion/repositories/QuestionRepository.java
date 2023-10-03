@@ -1,6 +1,7 @@
 package com.ems.codingdiscussion.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +18,7 @@ public interface QuestionRepository extends JpaRepository<Questions, Long> {
 	List<Questions> findByTagsLike(@Param("tag") String tag);
 
 	void save(QuestionDTO questionDTO);
+
+	List<Questions> findByUser_id(Long userId);
 
 }

@@ -134,4 +134,13 @@ public class QuestionServiceImpl implements QuestionService {
 			throw new Exception("Question doesn't exist ");
 		}
 	}
+
+	@Override
+	public AllQuestionResponseDTO getPostedQuestionList(Long userId) {
+		
+		List<Questions> questionList = questionRepository.findByUser_id(userId);
+		AllQuestionResponseDTO allQuestionResponseDTO = new AllQuestionResponseDTO();
+		allQuestionResponseDTO.setQuestionDTOlist(questionList.stream().map(Questions::getQuestionDTO).collect(Collectors.toList()));
+		return allQuestionResponseDTO;
+	}
 }

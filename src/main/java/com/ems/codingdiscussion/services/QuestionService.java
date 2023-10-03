@@ -19,4 +19,6 @@ public interface QuestionService {
 
 	QuestionDTO saveOrUpdate(QuestionDTO questionDTO) throws Exception;
 
+	AllQuestionResponseDTO getPostedQuestionList(Long userId);
+
 }
