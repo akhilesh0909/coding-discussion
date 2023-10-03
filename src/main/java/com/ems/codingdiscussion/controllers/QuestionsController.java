@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,6 +52,14 @@ public class QuestionsController {
 		}
 		return ResponseEntity.ok(singleQuestionDTO);
 	}
+	
+	@PutMapping("/edit/question/{questionId}")  
+	public QuestionDTO updateQuestion(@PathVariable Long questionId,@RequestBody QuestionDTO questionDTO)   
+	{  
+	   questionDTO.setId(questionId);
+	   questionService.saveOrUpdate(questionDTO);  
+	return questionDTO;  
+	}  
 	
 	@PostMapping("/askedQuestion")
 	public ResponseEntity<?> getQuestionListBySearch(@RequestBody String askedQuestion){

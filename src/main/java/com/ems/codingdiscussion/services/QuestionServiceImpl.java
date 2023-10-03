@@ -109,4 +109,23 @@ public class QuestionServiceImpl implements QuestionService {
 		
 		return allQuestionResponseDTO;
 	}
+
+	@Override
+	public void saveOrUpdate(QuestionDTO questionDTO) {
+		
+		Optional<User> optUser = userRepository.findById(questionDTO.getUserId());
+		if(optUser.isPresent()) {
+			Questions question = new Questions();
+			question.setTitle(questionDTO.getTitle());
+			question.setBody(questionDTO.getBody());
+			question.setTags(questionDTO.getTags());
+			question.setUser(optUser.get());
+			question.setId(questionDTO.getId());
+			Questions createdQuestion = questionRepository.save(question);
+			QuestionDTO createdQuestionDTO = new QuestionDTO();
+			createdQuestionDTO.setId(createdQuestion.getId());
+			createdQuestionDTO.setTitle(createdQuestion.getTitle());
+			return;
+		}
+	}
 }
