@@ -17,6 +17,6 @@ public interface QuestionService {
 
 	AllQuestionResponseDTO getQuestionListBySearch(String askedQuestion);
 
-	void saveOrUpdate(QuestionDTO questionDTO);
+	QuestionDTO saveOrUpdate(QuestionDTO questionDTO) throws Exception;
 
 }

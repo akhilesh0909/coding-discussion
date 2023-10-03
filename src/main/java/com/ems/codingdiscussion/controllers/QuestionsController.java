@@ -54,11 +54,16 @@ public class QuestionsController {
 	}
 	
 	@PutMapping("/edit/question/{questionId}")  
-	public QuestionDTO updateQuestion(@PathVariable Long questionId,@RequestBody QuestionDTO questionDTO)   
+	public ResponseEntity<?> updateQuestion(@PathVariable Long questionId,@RequestBody QuestionDTO questionDTO) throws Exception   
 	{  
 	   questionDTO.setId(questionId);
-	   questionService.saveOrUpdate(questionDTO);  
-	return questionDTO;  
+	   QuestionDTO createdQuestionDTO = questionService.saveOrUpdate(questionDTO);
+	   
+	   if(createdQuestionDTO == null) {
+			return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+		}
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestionDTO);
 	}  
 	
 	@PostMapping("/askedQuestion")

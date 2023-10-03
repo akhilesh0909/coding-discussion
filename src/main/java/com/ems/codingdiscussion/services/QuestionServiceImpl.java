@@ -111,21 +111,27 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public void saveOrUpdate(QuestionDTO questionDTO) {
+	public QuestionDTO saveOrUpdate(QuestionDTO questionDTO) throws Exception {
 		
 		Optional<User> optUser = userRepository.findById(questionDTO.getUserId());
-		if(optUser.isPresent()) {
+		Optional<Questions> optionalQuestion = questionRepository.findById(questionDTO.getId());
+
+		if(optUser.isPresent() && optionalQuestion.isPresent()) {
 			Questions question = new Questions();
 			question.setTitle(questionDTO.getTitle());
 			question.setBody(questionDTO.getBody());
-			question.setTags(questionDTO.getTags());
+			question.setTags(optionalQuestion.get().getTags());
+			question.setCreatedDate(optionalQuestion.get().getCreatedDate());
 			question.setUser(optUser.get());
 			question.setId(questionDTO.getId());
 			Questions createdQuestion = questionRepository.save(question);
 			QuestionDTO createdQuestionDTO = new QuestionDTO();
 			createdQuestionDTO.setId(createdQuestion.getId());
 			createdQuestionDTO.setTitle(createdQuestion.getTitle());
-			return;
+			return createdQuestionDTO;
+		}
+		else {
+			throw new Exception("Question doesn't exist ");
 		}
 	}
 }
