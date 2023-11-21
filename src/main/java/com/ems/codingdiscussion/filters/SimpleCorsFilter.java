@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SimpleCorsFilter implements Filter  {
 	
-	private final String clietAppUrl = "http://localhost:4200/*";
+	private final String clietAppUrl = "http://10.164.29.22:8080/*";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

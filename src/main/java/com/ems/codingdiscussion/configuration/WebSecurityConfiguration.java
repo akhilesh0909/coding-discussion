@@ -65,12 +65,21 @@ public class WebSecurityConfiguration {
 				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
 				.csrf()
 				.disable()
+				.cors()
+				.disable()
 				.authorizeHttpRequests()
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/sign-up"),AntPathRequestMatcher.antMatcher("/authenticate"))
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/sign-up"),
+						AntPathRequestMatcher.antMatcher("/authenticate"),
+						AntPathRequestMatcher.antMatcher("/forgot-password"),
+						AntPathRequestMatcher.antMatcher("/validate-otp"),
+						AntPathRequestMatcher.antMatcher("/reset-password"))
 				.permitAll()
 				.and()
 				.authorizeHttpRequests()
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/admin"),AntPathRequestMatcher.antMatcher("/api/**"),AntPathRequestMatcher.antMatcher("/user"),AntPathRequestMatcher.antMatcher("/"))
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/admin"),
+						AntPathRequestMatcher.antMatcher("/api/**"),
+						AntPathRequestMatcher.antMatcher("/user"),
+						AntPathRequestMatcher.antMatcher("/"))
 				.authenticated()
 				.and()
 				.formLogin()

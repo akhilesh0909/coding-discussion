@@ -14,7 +14,7 @@ import com.ems.codingdiscussion.entities.Questions;
 @Repository
 public interface QuestionRepository extends JpaRepository<Questions, Long> {
 
-	@Query(nativeQuery = true, value = "select q1_0.id,q1_0.body,q1_0.created_date,q1_0.title,q1_0.user_id from t_questions q1_0 WHERE q1_0.id in(select t1_0.questions_id from questions_tags t1_0 where t1_0.tags LIKE :tag)")
+	@Query(nativeQuery = true, value = "select * from questions q WHERE q.id in(select t.questions_id from questions_tags t where t.tags LIKE '%java')")
 	List<Questions> findByTagsLike(@Param("tag") String tag);
 
 	void save(QuestionDTO questionDTO);

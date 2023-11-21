@@ -1,5 +1,7 @@
 package com.ems.codingdiscussion.entities;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,7 +11,6 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "t_user")
 public class User {
 	
 	@Id
@@ -21,4 +22,7 @@ public class User {
 	private String email;
 	
 	private String password;
+	
+	@ColumnDefault(value="false")
+	private boolean isAdmin;
 }

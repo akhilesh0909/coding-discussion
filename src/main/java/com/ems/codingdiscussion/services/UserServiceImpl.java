@@ -1,19 +1,33 @@
 package com.ems.codingdiscussion.services;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.NotAcceptableStatusException;
 
+import com.ems.codingdiscussion.dtos.ResetPassword;
 import com.ems.codingdiscussion.dtos.SignupDTO;
 import com.ems.codingdiscussion.dtos.UserDTO;
+import com.ems.codingdiscussion.dtos.ValidateOtpDTO;
+import com.ems.codingdiscussion.entities.OtpEmail;
 import com.ems.codingdiscussion.entities.User;
+import com.ems.codingdiscussion.repositories.OtpEmailRepository;
 import com.ems.codingdiscussion.repositories.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService{
 	
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
+	
+	@Autowired
+	private OtpEmailRepository otpEmailRepository;
+	
+    private static final long OTP_VALID_DURATION = 5 * 60 * 1000;
+
 	
 	private enum EmailDomain {
 		
@@ -57,6 +71,48 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isValidOTP(ValidateOtpDTO validateOtpDTO) {
+		
+		String email = validateOtpDTO.getEmail();
+		String otp = validateOtpDTO.getOtp();
+		
+		Optional<OtpEmail> otpEmail = otpEmailRepository.findLatestByEmail(email);
+		
+		if(otpEmail.isPresent()) {
+			long currentTimeInMillis = System.currentTimeMillis();
+	        long otpRequestedTimeInMillis = otpEmail.get().getOtpRequestedTime();
+	                
+	        if (otpRequestedTimeInMillis + OTP_VALID_DURATION >= currentTimeInMillis) {
+	            if(otp.equals(otpEmail.get().getOneTimePassword())) {
+	            	return true;
+	            }
+	        }
+		}
+		return false;
+	}
+
+	@Override
+	public UserDTO resetPassword(ResetPassword resetPassword) throws UsernameNotFoundException {
+		
+		User user = new User();
+		userRepository.findFirstByEmail(resetPassword.getEmail()).ifPresentOrElse(userOptional -> {
+			user.setName(userOptional.getName());
+			user.setId(userOptional.getId());
+		}, () -> {
+			throw new UsernameNotFoundException("User not found");
+		});
+
+		user.setEmail(resetPassword.getEmail());
+		user.setPassword(new BCryptPasswordEncoder().encode(resetPassword.getPassword()));
+		User newUser = userRepository.save(user);
+		UserDTO userDTO = new UserDTO();
+		userDTO.setId(newUser.getId());
+		userDTO.setEmail(newUser.getEmail());
+		userDTO.setName(newUser.getName());
+		return userDTO;
 	}
 	
 

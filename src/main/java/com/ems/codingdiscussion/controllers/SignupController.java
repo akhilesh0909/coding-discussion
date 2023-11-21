@@ -28,7 +28,7 @@ public class SignupController {
 	public ResponseEntity<?> create(@RequestBody SignupDTO signupDTO){
 		
 		if (userService.hasUserWithEmail(signupDTO.getEmail())) {
-			return new ResponseEntity<>("User with this email " + signupDTO.getEmail() + " is already exist", HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<>("User with this email " + signupDTO.getEmail() + " already exist", HttpStatus.NOT_ACCEPTABLE);
 		}
 		if(!userService.isValidEmail(signupDTO.getEmail())) {
 			return new ResponseEntity<>("Only thalesgroup Email is valid",HttpStatus.NOT_ACCEPTABLE);

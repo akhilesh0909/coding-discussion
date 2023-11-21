@@ -24,7 +24,6 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "t_questions")
 public class Questions {
 	
 	@Id
