@@ -1,5 +1,7 @@
 package com.ems.codingdiscussion.services;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.server.NotAcceptableStatusException;
 
@@ -19,5 +21,11 @@ public interface UserService {
 	boolean isValidOTP(ValidateOtpDTO validateOtpDTO);
 	
 	UserDTO resetPassword(ResetPassword resetPassword) throws UsernameNotFoundException;
+
+	List<UserDTO> getAllUsers();
+
+	UserDTO makeAdmin(Long userId) throws UsernameNotFoundException;
+
+	void deleteUser(Long userId) throws UsernameNotFoundException;
 
 }

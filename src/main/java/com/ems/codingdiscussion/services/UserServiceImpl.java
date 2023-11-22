@@ -1,5 +1,7 @@
 package com.ems.codingdiscussion.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,7 +114,56 @@ public class UserServiceImpl implements UserService{
 		userDTO.setId(newUser.getId());
 		userDTO.setEmail(newUser.getEmail());
 		userDTO.setName(newUser.getName());
+		userDTO.setAdmin(newUser.isAdmin());
 		return userDTO;
+	}
+
+	@Override
+	public List<UserDTO> getAllUsers() {
+		List<User> users = userRepository.findAll();
+		List<UserDTO> userDTOs = new ArrayList<>();
+		
+		for(User user: users) {
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(user.getId());
+			userDTO.setEmail(user.getEmail());
+			userDTO.setName(user.getName());
+			userDTO.setAdmin(user.isAdmin());
+			userDTOs.add(userDTO);
+		}
+		
+		return userDTOs;
+	}
+
+	@Override
+	public UserDTO makeAdmin(Long userId) throws UsernameNotFoundException {
+		User user = new User();
+		userRepository.findById(userId).ifPresentOrElse(userOptional -> {
+			user.setName(userOptional.getName());
+			user.setId(userOptional.getId());
+			user.setEmail(userOptional.getEmail());
+		}, () -> {
+			throw new UsernameNotFoundException("User not found");
+		});
+		
+		user.setAdmin(true);
+		User newUser = userRepository.save(user);
+		
+		UserDTO userDTO = new UserDTO();
+		userDTO.setId(newUser.getId());
+		userDTO.setEmail(newUser.getEmail());
+		userDTO.setName(newUser.getName());
+		userDTO.setAdmin(newUser.isAdmin());
+		return userDTO;
+	}
+
+	@Override
+	public void deleteUser(Long userId) throws UsernameNotFoundException {
+		
+		if(userRepository.findById(userId).isEmpty()) {
+			throw new UsernameNotFoundException("User not found");
+		}
+		userRepository.deleteById(userId);
 	}
 	
 
