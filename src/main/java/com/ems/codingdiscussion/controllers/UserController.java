@@ -6,14 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ems.codingdiscussion.dtos.AllQuestionResponseDTO;
 import com.ems.codingdiscussion.dtos.UserDTO;
 import com.ems.codingdiscussion.services.UserService;
 
@@ -32,25 +30,30 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/{userId}/make-admin")
-	public ResponseEntity<?> makeAdmin(@PathVariable Long userId)  throws UsernameNotFoundException{
+	public ResponseEntity<?> makeAdmin(@PathVariable Long userId)  throws Exception{
 		UserDTO userDTO;
 		try {
 			userDTO = userService.makeAdmin(userId);
 		} catch (UsernameNotFoundException e) {
 			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			return new ResponseEntity<>("Something went wrong", HttpStatus.EXPECTATION_FAILED);
 		}
 		return ResponseEntity.ok(userDTO);
 	}
 	
-	@DeleteMapping("/user/{userId}/delete-user")
-	public ResponseEntity<?> deleteUser(@PathVariable Long userId)  throws UsernameNotFoundException{
+	@PostMapping("/user/{userId}/toggle-access")
+	public ResponseEntity<?> toggleUserAccess(@PathVariable Long userId)  throws Exception{
+		UserDTO userDTO;
 		try {
-			userService.deleteUser(userId);
+			userDTO = userService.toggleUserAccess(userId);
 		}
 		catch(UsernameNotFoundException ex){
 			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}catch (Exception e) {
+			return new ResponseEntity<>("Something went wrong", HttpStatus.EXPECTATION_FAILED);
 		}
-		return new ResponseEntity<>("User deleted successfully", HttpStatus.NO_CONTENT);
+		return ResponseEntity.ok(userDTO);
 	}
 	
 

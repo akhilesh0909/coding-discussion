@@ -13,8 +13,6 @@ import com.ems.codingdiscussion.entities.Image;
 import com.ems.codingdiscussion.repositories.AnswerRepository;
 import com.ems.codingdiscussion.repositories.ImageRepository;
 
-import io.micrometer.common.util.StringUtils;
-
 @Service
 public class ImageServiceImpl implements ImageService {
 	

@@ -2,10 +2,10 @@ package com.ems.codingdiscussion.controllers;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Random;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,9 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.NotAcceptableStatusException;
 
-import com.ems.codingdiscussion.dtos.AuthDTO;
 import com.ems.codingdiscussion.dtos.LoginDTO;
 import com.ems.codingdiscussion.dtos.ResetPassword;
 import com.ems.codingdiscussion.dtos.UserDTO;
@@ -30,8 +28,6 @@ import com.ems.codingdiscussion.repositories.UserRepository;
 import com.ems.codingdiscussion.services.EmailSenderService;
 import com.ems.codingdiscussion.services.UserService;
 import com.ems.codingdiscussion.utils.JWTUtil;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 public class AuthenticationController {
@@ -58,38 +54,49 @@ public class AuthenticationController {
 	public static final String HEADER_STRING ="Authorization";
 	
 	@PostMapping("/authenticate")
-	public void createJwtToken(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws Exception,DisabledException,BadCredentialsException{
+	public ResponseEntity<?> createJwtToken(@RequestBody LoginDTO loginDTO) throws Exception,DisabledException,BadCredentialsException{
 		
 		try {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),loginDTO.getPassword()));
 		}
 		catch(BadCredentialsException e){
-	    	throw new BadCredentialsException("Email or Password not valid");	
+	    	//throw new BadCredentialsException("Email or Password not valid");	
+	    	return new ResponseEntity<>("Email or Password not valid",HttpStatus.BAD_REQUEST);
 		}
 		catch(DisabledException disabledException) {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND,"USER IS NOT CREATED");
-			return;
+			//response.sendError(HttpServletResponse.SC_NOT_FOUND,"USER IS NOT CREATED");
+			//return;
+			return new ResponseEntity<>("User not created",HttpStatus.NOT_FOUND);
 		}
 		
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getEmail());
 		
 		Optional<User> optionalUser = userRepository.findFirstByEmail(userDetails.getUsername());
+		if(optionalUser.get().isLocked()) {
+			//response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,"User locked");
+			return new ResponseEntity<>("User locked", HttpStatus.LOCKED);
+		}
 		final String jwtToken = jwtUtil.generateToken(userDetails);
 		
 		if(optionalUser.isPresent()) {
-			response.getWriter().write(new JSONObject().put("userId", optionalUser.get().getId()).append("isAdmin", String.valueOf(optionalUser.get().isAdmin())).toString());
+			//response.getWriter().write(new JSONObject().put("userId", optionalUser.get().getId()).append("isAdmin", String.valueOf(optionalUser.get().isAdmin())).toString());
 			//response.getWriter().write(new JSONObject().put("isAdmin", optionalUser.get().isAdmin()).toString());
 		}
-		response.addHeader("Access-Control-Exppose-Headers", "Authorization");
-		response.setHeader("Access-Control-Allow-Headers", "Authorization,X-PINGOTHER,X-Requested-With,Content-Type, Accept,X-Custom-header");
 		
-		response.setHeader(HEADER_STRING, TOKEN_PREFIX +jwtToken);
+		HttpHeaders responseHeaders = new HttpHeaders();
+
+		responseHeaders.add("Access-Control-Exppose-Headers", "Authorization");
+		responseHeaders.set("Access-Control-Allow-Headers", "Authorization,X-PINGOTHER,X-Requested-With,Content-Type, Accept,X-Custom-header");
+		
+		responseHeaders.set(HEADER_STRING, TOKEN_PREFIX +jwtToken);
+		
+		return ResponseEntity.ok().headers(responseHeaders).body(new JSONObject().put("userId", optionalUser.get().getId()).append("isAdmin", String.valueOf(optionalUser.get().isAdmin())).toString());
 		
 	}
 	
 	@PostMapping("/forgot-password")
-	public ResponseEntity<?> createOTP(@RequestBody String email, HttpServletResponse response) throws Exception{
+	public ResponseEntity<?> createOTP(@RequestBody String email) throws Exception{
 
 		if(!userService.isValidEmail(email))
 			return new ResponseEntity<>("Only thalesgroup Email is valid",HttpStatus.NOT_ACCEPTABLE);
@@ -106,7 +113,7 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("/validate-otp")
-	public ResponseEntity<?> validateOTP(@RequestBody ValidateOtpDTO validateOtpDTO, HttpServletResponse response) throws Exception{
+	public ResponseEntity<?> validateOTP(@RequestBody ValidateOtpDTO validateOtpDTO) throws Exception{
 		
 		if(!userService.isValidOTP(validateOtpDTO))
 			return new ResponseEntity<>("OTP is not valid or expired", HttpStatus.NOT_ACCEPTABLE);
@@ -116,7 +123,7 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("/reset-password")
-	public ResponseEntity<?> resetPassword(@RequestBody ResetPassword resetPassword, HttpServletResponse response) throws UsernameNotFoundException{
+	public ResponseEntity<?> resetPassword(@RequestBody ResetPassword resetPassword) throws UsernameNotFoundException{
 		UserDTO newUser = null;
 		try {
 			newUser = userService.resetPassword(resetPassword);

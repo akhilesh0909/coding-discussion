@@ -1,11 +1,8 @@
 package com.ems.codingdiscussion.services;
 
-import java.util.List;
-
 import com.ems.codingdiscussion.dtos.AllQuestionResponseDTO;
 import com.ems.codingdiscussion.dtos.QuestionDTO;
 import com.ems.codingdiscussion.dtos.SingleQuestionDTO;
-import com.ems.codingdiscussion.entities.Questions;
 
 public interface QuestionService {
 

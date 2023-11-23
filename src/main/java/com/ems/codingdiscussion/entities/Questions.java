@@ -3,9 +3,6 @@ package com.ems.codingdiscussion.entities;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import com.ems.codingdiscussion.dtos.QuestionDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -19,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
@@ -43,7 +39,6 @@ public class Questions {
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_id", nullable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private User user;
 	

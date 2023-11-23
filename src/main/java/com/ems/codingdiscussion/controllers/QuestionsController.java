@@ -1,7 +1,5 @@
 package com.ems.codingdiscussion.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ems.codingdiscussion.dtos.AllQuestionResponseDTO;
 import com.ems.codingdiscussion.dtos.QuestionDTO;
 import com.ems.codingdiscussion.dtos.SingleQuestionDTO;
-import com.ems.codingdiscussion.entities.Questions;
 import com.ems.codingdiscussion.services.QuestionService;
 
 @RestController

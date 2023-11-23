@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.NotAcceptableStatusException;
 
 import com.ems.codingdiscussion.dtos.ResetPassword;
 import com.ems.codingdiscussion.dtos.SignupDTO;
@@ -27,7 +26,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private OtpEmailRepository otpEmailRepository;
-	
+		
     private static final long OTP_VALID_DURATION = 5 * 60 * 1000;
 
 	
@@ -54,6 +53,8 @@ public class UserServiceImpl implements UserService{
 		userDTO.setId(createdUser.getId());
 		userDTO.setEmail(createdUser.getEmail());
 		userDTO.setName(createdUser.getName());
+		userDTO.setAdmin(createdUser.isAdmin());
+		userDTO.setLocked(createdUser.isLocked());
 		return userDTO;
 	}
 
@@ -115,6 +116,7 @@ public class UserServiceImpl implements UserService{
 		userDTO.setEmail(newUser.getEmail());
 		userDTO.setName(newUser.getName());
 		userDTO.setAdmin(newUser.isAdmin());
+		userDTO.setLocked(user.isLocked());
 		return userDTO;
 	}
 
@@ -129,6 +131,7 @@ public class UserServiceImpl implements UserService{
 			userDTO.setEmail(user.getEmail());
 			userDTO.setName(user.getName());
 			userDTO.setAdmin(user.isAdmin());
+			userDTO.setLocked(user.isLocked());
 			userDTOs.add(userDTO);
 		}
 		
@@ -136,35 +139,59 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserDTO makeAdmin(Long userId) throws UsernameNotFoundException {
+	public UserDTO makeAdmin(Long userId) throws UsernameNotFoundException,Exception {
 		User user = new User();
 		userRepository.findById(userId).ifPresentOrElse(userOptional -> {
 			user.setName(userOptional.getName());
 			user.setId(userOptional.getId());
 			user.setEmail(userOptional.getEmail());
+			user.setLocked(userOptional.isLocked());
 		}, () -> {
 			throw new UsernameNotFoundException("User not found");
 		});
-		
-		user.setAdmin(true);
-		User newUser = userRepository.save(user);
+		try {
+			userRepository.makeAdmin(userId);
+		}catch(Exception e) {
+			throw new Exception("Something went wrong");
+		}
 		
 		UserDTO userDTO = new UserDTO();
-		userDTO.setId(newUser.getId());
-		userDTO.setEmail(newUser.getEmail());
-		userDTO.setName(newUser.getName());
-		userDTO.setAdmin(newUser.isAdmin());
+		userDTO.setId(user.getId());
+		userDTO.setEmail(user.getEmail());
+		userDTO.setName(user.getName());
+		userDTO.setAdmin(true);
+		userDTO.setLocked(user.isLocked());
 		return userDTO;
 	}
 
 	@Override
-	public void deleteUser(Long userId) throws UsernameNotFoundException {
-		
-		if(userRepository.findById(userId).isEmpty()) {
+	public UserDTO toggleUserAccess(Long userId) throws UsernameNotFoundException, Exception {
+		User user = new User();
+		userRepository.findById(userId).ifPresentOrElse(userOptional -> {
+			user.setName(userOptional.getName());
+			user.setId(userOptional.getId());
+			user.setEmail(userOptional.getEmail());
+			user.setAdmin(userOptional.isAdmin());
+			user.setLocked(userOptional.isLocked());
+		}, () -> {
 			throw new UsernameNotFoundException("User not found");
+		});
+		try {
+			userRepository.toggleUserAccess(userId,!user.isLocked());
+		}catch(Exception e) {
+			throw new Exception("Something went wrong");
 		}
-		userRepository.deleteById(userId);
+		
+		UserDTO userDTO = new UserDTO();
+		userDTO.setId(user.getId());
+		userDTO.setEmail(user.getEmail());
+		userDTO.setName(user.getName());
+		userDTO.setAdmin(user.isAdmin());
+		userDTO.setLocked(!user.isLocked());
+		return userDTO;
+		
 	}
+
 	
 
 

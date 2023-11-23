@@ -3,7 +3,6 @@ package com.ems.codingdiscussion.services;
 import java.util.List;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.server.NotAcceptableStatusException;
 
 import com.ems.codingdiscussion.dtos.ResetPassword;
 import com.ems.codingdiscussion.dtos.SignupDTO;
@@ -24,8 +23,8 @@ public interface UserService {
 
 	List<UserDTO> getAllUsers();
 
-	UserDTO makeAdmin(Long userId) throws UsernameNotFoundException;
+	UserDTO makeAdmin(Long userId) throws UsernameNotFoundException, Exception;
 
-	void deleteUser(Long userId) throws UsernameNotFoundException;
+	UserDTO toggleUserAccess(Long userId) throws UsernameNotFoundException, Exception;
 
 }
