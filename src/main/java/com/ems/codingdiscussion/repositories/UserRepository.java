@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
 	@Transactional
 	@Modifying(clearAutomatically = true)
-	@Query(nativeQuery = true, value = "UPDATE user SET is_admin=true WHERE id=:userId")
+	@Query(nativeQuery = true, value = "UPDATE user SET is_admin=true,is_locked=false WHERE id=:userId")
 	void makeAdmin(@Param("userId") Long userId);
 
 	@Transactional

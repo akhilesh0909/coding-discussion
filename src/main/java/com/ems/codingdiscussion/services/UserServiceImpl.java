@@ -145,7 +145,6 @@ public class UserServiceImpl implements UserService{
 			user.setName(userOptional.getName());
 			user.setId(userOptional.getId());
 			user.setEmail(userOptional.getEmail());
-			user.setLocked(userOptional.isLocked());
 		}, () -> {
 			throw new UsernameNotFoundException("User not found");
 		});
@@ -160,7 +159,7 @@ public class UserServiceImpl implements UserService{
 		userDTO.setEmail(user.getEmail());
 		userDTO.setName(user.getName());
 		userDTO.setAdmin(true);
-		userDTO.setLocked(user.isLocked());
+		userDTO.setLocked(false);
 		return userDTO;
 	}
 
