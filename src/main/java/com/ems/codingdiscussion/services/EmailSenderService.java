@@ -1,7 +1,9 @@
 package com.ems.codingdiscussion.services;
 
+import org.springframework.mail.SimpleMailMessage;
+
 public interface EmailSenderService {
 
-	void sendMail(String toEmail) throws Exception;
+	void sendMail(SimpleMailMessage message) throws Exception;
 
 }

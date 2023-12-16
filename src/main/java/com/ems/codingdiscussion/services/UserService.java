@@ -2,6 +2,7 @@ package com.ems.codingdiscussion.services;
 
 import java.util.List;
 
+import com.ems.codingdiscussion.entities.OtpEmail;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.ems.codingdiscussion.dtos.ResetPassword;
@@ -26,5 +27,7 @@ public interface UserService {
 	UserDTO makeAdmin(Long userId) throws UsernameNotFoundException, Exception;
 
 	UserDTO toggleUserAccess(Long userId) throws UsernameNotFoundException, Exception;
+
+	public void saveOtp(int otp, String email);
 
 }

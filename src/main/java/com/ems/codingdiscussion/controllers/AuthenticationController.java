@@ -2,12 +2,14 @@ package com.ems.codingdiscussion.controllers;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Random;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -49,7 +51,9 @@ public class AuthenticationController {
 	
 	@Autowired
 	private UserService userService;
-	
+
+	Random random = new Random(1000);
+
 	public static final String TOKEN_PREFIX ="Bearer ";
 	public static final String HEADER_STRING ="Authorization";
 	
@@ -86,7 +90,7 @@ public class AuthenticationController {
 		
 		HttpHeaders responseHeaders = new HttpHeaders();
 
-		responseHeaders.add("Access-Control-Exppose-Headers", "Authorization");
+		responseHeaders.add("Access-Control-Expose-Headers", "Authorization");
 		responseHeaders.set("Access-Control-Allow-Headers", "Authorization,X-PINGOTHER,X-Requested-With,Content-Type, Accept,X-Custom-header");
 		
 		responseHeaders.set(HEADER_STRING, TOKEN_PREFIX +jwtToken);
@@ -100,16 +104,29 @@ public class AuthenticationController {
 
 		if(!userService.isValidEmail(email))
 			return new ResponseEntity<>("Only thalesgroup Email is valid",HttpStatus.NOT_ACCEPTABLE);
+		int otp = random.nextInt(999999);
+		String subject = "OTP from EMS";
+		String body = "OTP : " + otp;
+		SimpleMailMessage message=new SimpleMailMessage();
+		message.setFrom("EMS-CODING-DISCUSSION@THALESGROUP.COM");
+		message.setTo(email);
+		message.setText(body);
+		message.setSubject(subject);
 		try {
-			this.emailService.sendMail(email);
+			this.emailService.sendMail(message);
 		}catch(NoSuchElementException ex){
 			return new ResponseEntity<>("User not found",HttpStatus.NOT_FOUND);
 		}catch(Exception e) {
 			return new ResponseEntity<>("Something went wrong",HttpStatus.GATEWAY_TIMEOUT);
 		}
-			
+		try{
+			this.userService.saveOtp(otp,email);
+		}catch (Exception e){
+			return new ResponseEntity<>("Something went wrong",HttpStatus.GATEWAY_TIMEOUT);
+		}
+
 		return new ResponseEntity<>("OTP Sent Successfully", HttpStatus.OK);
-		
+
 	}
 	
 	@PostMapping("/validate-otp")

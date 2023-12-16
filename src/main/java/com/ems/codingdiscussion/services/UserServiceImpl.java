@@ -104,6 +104,8 @@ public class UserServiceImpl implements UserService{
 		userRepository.findFirstByEmail(resetPassword.getEmail()).ifPresentOrElse(userOptional -> {
 			user.setName(userOptional.getName());
 			user.setId(userOptional.getId());
+			user.setAdmin(userOptional.isAdmin());
+			user.setLocked(userOptional.isLocked());
 		}, () -> {
 			throw new UsernameNotFoundException("User not found");
 		});
@@ -191,7 +193,15 @@ public class UserServiceImpl implements UserService{
 		
 	}
 
-	
+	@Override
+	public void saveOtp(int otp, String email) {
+		OtpEmail otpEmail = new OtpEmail();
 
+		otpEmail.setEmail(email);
+		otpEmail.setOneTimePassword(String.valueOf(otp));
+		otpEmail.setOtpRequestedTime(System.currentTimeMillis());
+
+		otpEmailRepository.save(otpEmail);
+	}
 
 }

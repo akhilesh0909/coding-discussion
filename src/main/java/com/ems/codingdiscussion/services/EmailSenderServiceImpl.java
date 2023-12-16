@@ -14,9 +14,7 @@ import com.ems.codingdiscussion.repositories.UserRepository;
 
 @Repository
 public class EmailSenderServiceImpl implements EmailSenderService {
-	
-    Random random = new Random(1000);
-    
+
     @Autowired
     private UserRepository userRepository;
     
@@ -27,35 +25,15 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     private JavaMailSender mailSender;
 
 	@Override
-	public void sendMail(String toEmail) throws Exception {
-		
-		userRepository.findFirstByEmail(toEmail).orElseThrow();
-		
-		int otp = random.nextInt(999999);
-		
-		String subject = "OTP from Coding Discussion Portal";
-		String body = "OTP : " + otp;
-		SimpleMailMessage message=new SimpleMailMessage();
-        message.setFrom("CodingDiscussion-EMS@thalesgroup.com");
-        message.setTo(toEmail);
-        message.setText(body);
-        message.setSubject(subject);
-        
+	public void sendMail(SimpleMailMessage message) throws Exception {
+
+        for (String email: message.getTo())
+            userRepository.findFirstByEmail(email).orElseThrow();
         try {
-			mailSender.send(message);
-		} catch (MailException e) {
-			throw new Exception("Mail not sent");
-		}
-        
-        OtpEmail otpEmail = new OtpEmail();
-        
-        otpEmail.setEmail(toEmail);
-        otpEmail.setOneTimePassword(String.valueOf(otp));
-        otpEmail.setOtpRequestedTime(System.currentTimeMillis());
-        
-        otpEmailRepository.save(otpEmail);
-        
-		
-	}
+            mailSender.send(message);
+        } catch (MailException e) {
+            throw new Exception("Mail not sent");
+        }
+    }
 
 }
