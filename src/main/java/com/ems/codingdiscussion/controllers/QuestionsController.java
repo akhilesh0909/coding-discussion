@@ -3,13 +3,7 @@ package com.ems.codingdiscussion.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ems.codingdiscussion.dtos.AllQuestionResponseDTO;
 import com.ems.codingdiscussion.dtos.QuestionDTO;
@@ -80,4 +74,16 @@ public class QuestionsController {
 		}
 		return ResponseEntity.ok(postedQuestionResponse);
 	}
+
+	@DeleteMapping("/deleteQuestion/{userId}/{questionId}")
+	public ResponseEntity<?> deleteQuestion(@PathVariable Long userId, @PathVariable Long questionId){
+		try {
+			questionService.deleteQuestion(userId,questionId);
+		}catch (Exception e){
+			return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>("Question deleted successfully",HttpStatus.OK);
+
+	}
+
 }

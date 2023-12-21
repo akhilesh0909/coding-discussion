@@ -143,4 +143,20 @@ public class QuestionServiceImpl implements QuestionService {
 		allQuestionResponseDTO.setQuestionDTOlist(questionList.stream().map(Questions::getQuestionDTO).collect(Collectors.toList()));
 		return allQuestionResponseDTO;
 	}
+
+	@Override
+	public void deleteQuestion(Long userId, Long questionId) throws RuntimeException {
+
+		userRepository.findById(userId).ifPresentOrElse((optUser) -> {
+			if (optUser.isAdmin()){
+				try {
+					questionRepository.deleteById(questionId);
+				}catch (IllegalArgumentException e){
+					throw new RuntimeException("Something went wrong");
+				}
+			}
+		}, () -> {
+			throw new RuntimeException("Only admin can delete questions");
+		});
+	}
 }

@@ -18,4 +18,5 @@ public interface QuestionService {
 
 	AllQuestionResponseDTO getPostedQuestionList(Long userId);
 
+    void deleteQuestion(Long userId, Long questionId) throws RuntimeException;
 }
