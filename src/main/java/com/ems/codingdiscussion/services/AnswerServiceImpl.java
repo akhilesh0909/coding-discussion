@@ -1,9 +1,11 @@
 package com.ems.codingdiscussion.services;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.ems.codingdiscussion.dtos.AnswerDTO;
@@ -26,6 +28,9 @@ public class AnswerServiceImpl implements AnswerService {
 	
 	@Autowired
 	private AnswerRepository answerRepository;
+
+	@Autowired
+	private EmailSenderService emailSenderService;
 	
 
 	@Override
@@ -39,6 +44,23 @@ public class AnswerServiceImpl implements AnswerService {
 			answers.setUser(optionalUser.get());
 			answers.setQuestion(optionalQuestion.get());
 			Answers createdAnswers = answerRepository.save(answers);
+			new Thread(() -> {
+				try {
+					String subject = "Answer posted on EMS-DISCUSSION-PORTAL";
+					String body = "One Answer posted by " + answers.getUser().getEmail() + "\n" +
+							"Click on URL to view" +
+							"http://sm-ems-discussion-portal.smtools.sentinelcloud.com/#/user/dashboard";
+					SimpleMailMessage message=new SimpleMailMessage();
+					message.setFrom("EMS-CODING-DISCUSSION@THALESGROUP.COM");
+					message.setText(body);
+					message.setSubject(subject);
+					message.setTo(optionalQuestion.get().getUser().getEmail());
+					emailSenderService.sendMail(message);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}).start();
+
 			AnswerDTO ansDto = new AnswerDTO();
 			ansDto.setId(createdAnswers.getId());
 			return ansDto;

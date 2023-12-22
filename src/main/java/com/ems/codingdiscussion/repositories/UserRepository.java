@@ -1,5 +1,6 @@
 package com.ems.codingdiscussion.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +27,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Modifying(clearAutomatically = true)
 	@Query(nativeQuery = true, value = "UPDATE user SET is_locked=:isLocked WHERE id=:userId")
 	void toggleUserAccess(@Param("userId") Long userId,@Param("isLocked") boolean isLocked);
+
+	List<User> findAllByRole(String role);
 }

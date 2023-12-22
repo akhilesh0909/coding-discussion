@@ -27,4 +27,6 @@ public class User {
 	
 	@ColumnDefault(value="false")
 	private boolean isLocked;
+
+	private String role;
 }

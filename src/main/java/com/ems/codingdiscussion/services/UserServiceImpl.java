@@ -48,11 +48,13 @@ public class UserServiceImpl implements UserService{
 		user.setEmail(signupDTO.getEmail());
 		user.setName(signupDTO.getName());
 		user.setPassword(new BCryptPasswordEncoder().encode(signupDTO.getPassword()));
+		user.setRole(signupDTO.getRole());
 		User createdUser = userRepository.save(user);
 		UserDTO userDTO = new UserDTO();
 		userDTO.setId(createdUser.getId());
 		userDTO.setEmail(createdUser.getEmail());
 		userDTO.setName(createdUser.getName());
+		userDTO.setRole(createdUser.getRole());
 		userDTO.setAdmin(createdUser.isAdmin());
 		userDTO.setLocked(createdUser.isLocked());
 		return userDTO;
@@ -106,6 +108,7 @@ public class UserServiceImpl implements UserService{
 			user.setId(userOptional.getId());
 			user.setAdmin(userOptional.isAdmin());
 			user.setLocked(userOptional.isLocked());
+			user.setRole(userOptional.getRole());
 		}, () -> {
 			throw new UsernameNotFoundException("User not found");
 		});
@@ -119,6 +122,7 @@ public class UserServiceImpl implements UserService{
 		userDTO.setName(newUser.getName());
 		userDTO.setAdmin(newUser.isAdmin());
 		userDTO.setLocked(user.isLocked());
+		userDTO.setRole(user.getRole());
 		return userDTO;
 	}
 
@@ -134,6 +138,7 @@ public class UserServiceImpl implements UserService{
 			userDTO.setName(user.getName());
 			userDTO.setAdmin(user.isAdmin());
 			userDTO.setLocked(user.isLocked());
+			userDTO.setRole(user.getRole());
 			userDTOs.add(userDTO);
 		}
 		
@@ -147,6 +152,7 @@ public class UserServiceImpl implements UserService{
 			user.setName(userOptional.getName());
 			user.setId(userOptional.getId());
 			user.setEmail(userOptional.getEmail());
+			user.setRole(userOptional.getRole());
 		}, () -> {
 			throw new UsernameNotFoundException("User not found");
 		});
@@ -162,6 +168,7 @@ public class UserServiceImpl implements UserService{
 		userDTO.setName(user.getName());
 		userDTO.setAdmin(true);
 		userDTO.setLocked(false);
+		userDTO.setRole(user.getRole());
 		return userDTO;
 	}
 
@@ -174,6 +181,7 @@ public class UserServiceImpl implements UserService{
 			user.setEmail(userOptional.getEmail());
 			user.setAdmin(userOptional.isAdmin());
 			user.setLocked(userOptional.isLocked());
+			user.setRole(userOptional.getRole());
 		}, () -> {
 			throw new UsernameNotFoundException("User not found");
 		});
@@ -189,6 +197,7 @@ public class UserServiceImpl implements UserService{
 		userDTO.setName(user.getName());
 		userDTO.setAdmin(user.isAdmin());
 		userDTO.setLocked(!user.isLocked());
+		userDTO.setRole(user.getRole());
 		return userDTO;
 		
 	}

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.ems.codingdiscussion.dtos.AllQuestionResponseDTO;
@@ -38,6 +39,9 @@ public class QuestionServiceImpl implements QuestionService {
 	
 	@Autowired
 	private ImageRepository imageRepository;
+
+	@Autowired
+	private EmailSenderService emailSenderService;
 	
 	public static final int SEARCH_RESULT_PER_PAGE =5;
 	
@@ -52,6 +56,23 @@ public class QuestionServiceImpl implements QuestionService {
 			question.setCreatedDate(new Date());
 			question.setUser(optUser.get());
 			Questions createdQuestion = questionRepository.save(question);
+			new Thread(() -> {
+				try {
+					String subject = "Question posted on EMS-DISCUSSION-PORTAL";
+					String body = "One question posted by " + question.getUser().getEmail() + "\n" +
+							"Click on URL to view" +
+							questionDTO.getTitle();
+					SimpleMailMessage message=new SimpleMailMessage();
+					message.setFrom("EMS-CODING-DISCUSSION@THALESGROUP.COM");
+					message.setText(body);
+					message.setSubject(subject);
+					List<String> userEmails = userRepository.findAllByRole(optUser.get().getRole()).stream().map(User::getEmail).filter((email) -> !email.equalsIgnoreCase(question.getUser().getEmail())).toList();
+					message.setTo(userEmails.toArray(new String[0]));
+					emailSenderService.sendMail(message);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}).start();
 			QuestionDTO createdQuestionDTO = new QuestionDTO();
 			createdQuestionDTO.setId(createdQuestion.getId());
 			createdQuestionDTO.setTitle(createdQuestion.getTitle());
