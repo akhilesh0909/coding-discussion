@@ -60,7 +60,8 @@ public class QuestionServiceImpl implements QuestionService {
 				try {
 					String subject = "Question posted on EMS-DISCUSSION-PORTAL";
 					String body = "One question posted by " + question.getUser().getEmail() + "\n" +
-							"Click on URL to view" +
+							"Click on URL to view \n" +
+							"http://sm-ems-discussion-portal.smtools.sentinelcloud.com/#/user/dashboard \n" +
 							questionDTO.getTitle();
 					SimpleMailMessage message=new SimpleMailMessage();
 					message.setFrom("EMS-CODING-DISCUSSION@THALESGROUP.COM");

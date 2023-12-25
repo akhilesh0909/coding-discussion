@@ -2,13 +2,8 @@ package com.ems.codingdiscussion.services;
 
 import java.util.List;
 
-import com.ems.codingdiscussion.entities.OtpEmail;
+import com.ems.codingdiscussion.dtos.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import com.ems.codingdiscussion.dtos.ResetPassword;
-import com.ems.codingdiscussion.dtos.SignupDTO;
-import com.ems.codingdiscussion.dtos.UserDTO;
-import com.ems.codingdiscussion.dtos.ValidateOtpDTO;
 
 public interface UserService {
 
@@ -20,7 +15,7 @@ public interface UserService {
 	
 	boolean isValidOTP(ValidateOtpDTO validateOtpDTO);
 	
-	UserDTO resetPassword(ResetPassword resetPassword) throws UsernameNotFoundException;
+	UserDTO resetPassword(ResetPasswordDTO resetPasswordDTO) throws UsernameNotFoundException;
 
 	List<UserDTO> getAllUsers();
 
@@ -30,4 +25,9 @@ public interface UserService {
 
 	public void saveOtp(int otp, String email);
 
+    UserDTO getUser(Long userId) throws Exception;
+
+	UserDTO changeUserName(Long userId, String userName) throws Exception;
+
+	void changePassword(ChangePasswordDTO changePasswordDTO) throws Exception;
 }

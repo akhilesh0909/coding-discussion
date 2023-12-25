@@ -74,7 +74,8 @@ public class WebSecurityConfiguration {
 				.authorizeHttpRequests()
 				.requestMatchers(AntPathRequestMatcher.antMatcher("/admin"),
 						AntPathRequestMatcher.antMatcher("/api/**"),
-						AntPathRequestMatcher.antMatcher("/user"),
+						AntPathRequestMatcher.antMatcher("/user/**"),
+						AntPathRequestMatcher.antMatcher("/change-password"),
 						AntPathRequestMatcher.antMatcher("/"))
 				.authenticated()
 				.and()

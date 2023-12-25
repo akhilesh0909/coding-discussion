@@ -48,7 +48,7 @@ public class AnswerServiceImpl implements AnswerService {
 				try {
 					String subject = "Answer posted on EMS-DISCUSSION-PORTAL";
 					String body = "One Answer posted by " + answers.getUser().getEmail() + "\n" +
-							"Click on URL to view" +
+							"Click on URL to view \n" +
 							"http://sm-ems-discussion-portal.smtools.sentinelcloud.com/#/user/dashboard";
 					SimpleMailMessage message=new SimpleMailMessage();
 					message.setFrom("EMS-CODING-DISCUSSION@THALESGROUP.COM");

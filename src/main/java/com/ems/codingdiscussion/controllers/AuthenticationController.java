@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
 
+import com.ems.codingdiscussion.dtos.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,10 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ems.codingdiscussion.dtos.LoginDTO;
-import com.ems.codingdiscussion.dtos.ResetPassword;
-import com.ems.codingdiscussion.dtos.UserDTO;
-import com.ems.codingdiscussion.dtos.ValidateOtpDTO;
 import com.ems.codingdiscussion.entities.User;
 import com.ems.codingdiscussion.repositories.UserRepository;
 import com.ems.codingdiscussion.services.EmailSenderService;
@@ -140,15 +137,29 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("/reset-password")
-	public ResponseEntity<?> resetPassword(@RequestBody ResetPassword resetPassword) throws UsernameNotFoundException{
+	public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDTO resetPasswordDTO) throws UsernameNotFoundException{
 		UserDTO newUser = null;
 		try {
-			newUser = userService.resetPassword(resetPassword);
+			newUser = userService.resetPassword(resetPasswordDTO);
 		} catch (UsernameNotFoundException e) {
 			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
 			
-		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+		return new ResponseEntity<>("Password reset successfully", HttpStatus.OK);
 		
+	}
+
+	@PostMapping("/change-password")
+	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) throws Exception{
+		try {
+			userService.changePassword(changePasswordDTO);
+		} catch (UsernameNotFoundException e) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		} catch (BadCredentialsException bce){
+			return new ResponseEntity<>("Incorrect old password provided", HttpStatus.NOT_ACCEPTABLE);
+		}
+
+		return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
+
 	}
 }

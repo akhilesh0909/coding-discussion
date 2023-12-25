@@ -6,11 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ems.codingdiscussion.dtos.UserDTO;
 import com.ems.codingdiscussion.services.UserService;
@@ -55,6 +51,31 @@ public class UserController {
 		}
 		return ResponseEntity.ok(userDTO);
 	}
-	
+
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<?> getUser(@PathVariable Long userId) throws Exception {
+		UserDTO userDTO;
+		try {
+			userDTO = userService.getUser(userId);
+		} catch (UsernameNotFoundException ex) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			return new ResponseEntity<>("Something went wrong", HttpStatus.EXPECTATION_FAILED);
+		}
+		return ResponseEntity.ok(userDTO);
+	}
+
+	@PatchMapping("/user/{userId}/{newUserName}")
+	public ResponseEntity<?> changeUserName(@PathVariable Long userId,@PathVariable String newUserName) throws Exception {
+		UserDTO userDTO;
+		try {
+			userDTO = userService.changeUserName(userId,newUserName);
+		} catch (UsernameNotFoundException ex) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			return new ResponseEntity<>("Something went wrong", HttpStatus.EXPECTATION_FAILED);
+		}
+		return ResponseEntity.ok(userDTO);
+	}
 
 }

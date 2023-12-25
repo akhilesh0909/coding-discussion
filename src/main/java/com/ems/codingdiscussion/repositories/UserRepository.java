@@ -29,4 +29,11 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	void toggleUserAccess(@Param("userId") Long userId,@Param("isLocked") boolean isLocked);
 
 	List<User> findAllByRole(String role);
+
+    Optional<User> findByName(String userName);
+
+	@Transactional
+	@Modifying(clearAutomatically = true)
+	@Query(nativeQuery = true, value = "UPDATE user SET name=:userName WHERE id=:userId")
+	void updateUserName(Long userId, String userName);
 }
