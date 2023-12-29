@@ -35,5 +35,8 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Transactional
 	@Modifying(clearAutomatically = true)
 	@Query(nativeQuery = true, value = "UPDATE user SET name=:userName WHERE id=:userId")
-	void updateUserName(Long userId, String userName);
+	void updateUserName(@Param("userId") Long userId,@Param("userName") String userName);
+
+	@Query(nativeQuery = true, value = "SELECT COUNT(*) FROM user where id IN :votedUsers AND is_admin =true")
+    Integer adminVotes(@Param("votedUsers") List<Long> votedUsers);
 }

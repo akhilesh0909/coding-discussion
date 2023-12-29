@@ -1,6 +1,7 @@
 package com.ems.codingdiscussion.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import com.ems.codingdiscussion.dtos.AnswerDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -23,6 +25,15 @@ public class Answers {
 	private String body;
 
 	private Date createdDate;
+
+	@ColumnDefault(value = "0")
+	private Integer votes;
+
+	@ColumnDefault(value = "false")
+	private Boolean isApproved;
+
+	@ElementCollection(targetClass=Long.class, fetch = FetchType.EAGER)
+	private List<Long> votedUsers;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_id", nullable = false)
@@ -44,7 +55,9 @@ public class Answers {
 		answerDTO.setQuestionId(question.getId());
 		answerDTO.setUserName(user.getName());
 		answerDTO.setCreatedDate(createdDate);
-
+		answerDTO.setVotes(votes);
+		answerDTO.setVotedUsers(votedUsers);
+		answerDTO.setIsApproved(isApproved);
 		return answerDTO;
 
 	}

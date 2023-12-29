@@ -6,4 +6,5 @@ public interface AnswerService {
 
 	AnswerDTO postAnswer(AnswerDTO answerDTO);
 
+    void submitUpvote(Long userId, Long answerId, Boolean isUpvoting) throws Exception;
 }

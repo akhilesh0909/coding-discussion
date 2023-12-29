@@ -1,6 +1,7 @@
 package com.ems.codingdiscussion.dtos;
 
 import java.util.Date;
+import java.util.List;
 
 import com.ems.codingdiscussion.entities.Image;
 
@@ -23,6 +24,10 @@ public class AnswerDTO {
 	
 	private Image file;
 	
-	
+	private Integer votes;
+
+	private List<Long> votedUsers;
+
+	private Boolean isApproved;
 
 }

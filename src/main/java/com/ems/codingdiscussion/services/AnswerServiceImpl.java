@@ -1,7 +1,6 @@
 package com.ems.codingdiscussion.services;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +65,37 @@ public class AnswerServiceImpl implements AnswerService {
 			return ansDto;
 		}
 		return null;
+	}
+
+	@Override
+	public void submitUpvote(Long userId, Long answerId, Boolean isUpvoting) throws Exception {
+		Answers answers = new Answers();
+		answerRepository.findById(answerId).ifPresentOrElse((optAnswer) -> {
+			if(userRepository.findById(userId).isPresent()) {
+				try {
+						answers.setId(answerId);
+						answers.setBody(optAnswer.getBody());
+						answers.setCreatedDate(optAnswer.getCreatedDate());
+						answers.setUser(optAnswer.getUser());
+						answers.setIsApproved(optAnswer.getIsApproved());
+						answers.setQuestion(optAnswer.getQuestion());
+						if (isUpvoting) {
+							answers.setVotes(optAnswer.getVotes() + 1);
+							optAnswer.getVotedUsers().add(userId);
+							answers.setVotedUsers(optAnswer.getVotedUsers());
+						}else {
+							answers.setVotes(optAnswer.getVotes() - 1);
+							optAnswer.getVotedUsers().remove(userId);
+							answers.setVotedUsers(optAnswer.getVotedUsers());
+						}
+						answerRepository.save(answers);
+				}catch (Exception e){
+					throw new RuntimeException("Something went wrong");
+				}
+			}
+		},() -> {
+			throw new RuntimeException("Something went wrong");
+		});
 	}
 
 }
