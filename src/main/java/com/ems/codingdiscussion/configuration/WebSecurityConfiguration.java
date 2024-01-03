@@ -68,7 +68,8 @@ public class WebSecurityConfiguration {
 						AntPathRequestMatcher.antMatcher("/authenticate"),
 						AntPathRequestMatcher.antMatcher("/forgot-password"),
 						AntPathRequestMatcher.antMatcher("/validate-otp"),
-						AntPathRequestMatcher.antMatcher("/reset-password"))
+						AntPathRequestMatcher.antMatcher("/reset-password"),
+						AntPathRequestMatcher.antMatcher("/api/user/{userId}"))
 				.permitAll()
 				.and()
 				.authorizeHttpRequests()
